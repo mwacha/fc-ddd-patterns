@@ -180,7 +180,7 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
-    const product = new Product("Product1", "Product 1", 15);
+    const product = new Product("Product1", "Product 1", 30);
     await productRepository.create(product);
   
     const ordemItem = new OrderItem(
@@ -209,8 +209,9 @@ describe("Order repository test", () => {
     await orderRepository.create(order2);
 
     const orders = [order, order2,];    
-    const foundOrder = await orderRepository.findAll();
+    const foundOrders = await orderRepository.findAll();
 
-    expect(orders).toEqual(foundOrder);
+    expect(foundOrders).toHaveLength(2);    
+    expect(orders).toEqual(foundOrders);
   });
 });

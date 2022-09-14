@@ -191,13 +191,13 @@ describe("Order repository test", () => {
       2
     );     
 
-    const ordemItem2 = new OrderItem(
+    /*const ordemItem2 = new OrderItem(
       "Item2",
       product.name,
       product.price,
       product.id,
       2
-    );     
+    );     */
  
 
     const orderRepository = new OrderRepository();
@@ -205,10 +205,10 @@ describe("Order repository test", () => {
     const order = new Order("Ordem1", "123", [ordemItem]);
     await orderRepository.create(order);
 
-    const order2 = new Order("Ordem2", "123", [ordemItem2]);
-    await orderRepository.create(order2);
+   /* const order2 = new Order("Ordem2", "123", [ordemItem2]);
+    await orderRepository.create(order2);*/
 
-    const orders = [order, order2,];    
+    const orders = [order];    
     const foundOrder = await orderRepository.findAll();
 
     expect(orders).toEqual(foundOrder);

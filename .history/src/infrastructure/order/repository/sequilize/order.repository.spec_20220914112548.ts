@@ -171,8 +171,7 @@ describe("Order repository test", () => {
     expect(order).toStrictEqual(foundOrder);
   });
 
-  it("should find all order", async () => {
-
+  it("should find all orders", async () => {
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
@@ -180,37 +179,43 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
-    const product = new Product("Product1", "Product 1", 15);
+    const product = new Product("123", "Product 1", 10);
     await productRepository.create(product);
-  
-    const ordemItem = new OrderItem(
-      "Item1",
-      product.name,
-      product.price,
-      product.id,
-      2
-    );     
 
-    const ordemItem2 = new OrderItem(
-      "Item2",
+    const orderItem = new OrderItem(
+      "1",
       product.name,
       product.price,
       product.id,
       2
-    );     
- 
+    );
+
+    const order = new Order("123", "123", [orderItem]);
 
     const orderRepository = new OrderRepository();
-    
-    const order = new Order("Ordem1", "123", [ordemItem]);
     await orderRepository.create(order);
 
-    const order2 = new Order("Ordem2", "123", [ordemItem2]);
+    
+    const product2 = new Product("456", "Product 2", 20);
+    await productRepository.create(product2);
+
+    const orderItem2 = new OrderItem(
+      "2",
+      product2.name,
+      product2.price,
+      product2.id,
+      1
+    );
+
+    const order2 = new Order("456", "123", [orderItem2]);
     await orderRepository.create(order2);
 
-    const orders = [order, order2,];    
-    const foundOrder = await orderRepository.findAll();
+    const foundAllOrders = await orderRepository.findAll();
 
-    expect(orders).toEqual(foundOrder);
+   
+
+    expect(foundAllOrders).toHaveLength(2);    
+    expect(foundAllOrders).toContainEqual(order2);
+    expect(foundAllOrders).toContainEqual(order);
   });
 });

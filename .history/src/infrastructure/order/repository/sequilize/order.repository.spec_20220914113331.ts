@@ -180,7 +180,7 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
-    const product = new Product("Product1", "Product 1", 15);
+    const product = new Product("Product1", "Product 1", 30);
     await productRepository.create(product);
   
     const ordemItem = new OrderItem(
