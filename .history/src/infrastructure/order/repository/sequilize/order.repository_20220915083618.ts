@@ -1,9 +1,11 @@
 import Order from "../../../../domain/checkout/entity/order";
 import OrderItem from "../../../../domain/checkout/entity/order_item";
+import OrderRepositoryInterface from "../../../../domain/checkout/repository/order-repository.interface";
+import ProductModel from "../../../product/repository/sequelize/product.model";
 import OrderItemModel from "./order-item.model";
 import OrderModel from "./order.model";
 
-export default class OrderRepository {
+export default class OrderRepository implements OrderRepositoryInterface {
   async create(entity: Order): Promise<void> {
     await OrderModel.create(
       {
@@ -74,30 +76,31 @@ export default class OrderRepository {
   }
 
   async findAll(): Promise<Order[]> {
-    const orderModels = await OrderModel.findAll({
-      include: [{ model: OrderItemModel }],
-    });
+    let orderModels;
+    try {
+      orderModels = await OrderModel.findAll({ include: ["items"] });
+    } catch (error) {
+      throw new Error("Order not found");
+    }
+    
+    const retOrders = await Promise.all(orderModels.map(async (orderModel) : Promise<Order>  => {
 
-    const orders = orderModels.map((orderModel) => {
-      let order = new Order(
-        orderModel.id,
-        orderModel.customer_id,
-        orderModel.items.map((item) => {
-          let orderItem = new OrderItem(
-            item.id,
-            item.name,
-            item.price,
-            item.product_id,
-            item.quantity
-          );
+      let orderItens: OrderItem[] = await Promise.all(orderModel.items.map( async (item): Promise<OrderItem>  => {
+        let prd = ( await ProductModel.findOne({ where: { id: item.product_id } }));
+      
+        return new OrderItem(
+          item.id,
+          item.name,
+          prd.price,
+          item.product_id,
+          item.quantity
+        )}));   
 
-          return orderItem;
-        })
-      );
+      return new Order(orderModel.id, orderModel.customer_id, orderItens)
 
-      return order;
-    });
-
-    return orders;
+    }));
+      
+    return retOrders;
   }
 }
+

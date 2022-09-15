@@ -208,9 +208,11 @@ describe("Order repository test", () => {
     const order2 = new Order("Ordem2", "123", [ordemItem2]);
     await orderRepository.create(order2);
 
-    const orders = [order, order2,];    
-    const foundOrder = await orderRepository.findAll();
+    const foundAllOrders = await orderRepository.findAll();
 
-    expect(orders).toEqual(foundOrder);
+    expect(foundAllOrders).toHaveLength(2);
+    expect(foundAllOrders).toContainEqual(order);
+    expect(foundAllOrders).toContainEqual(order2);
+   
   });
 });

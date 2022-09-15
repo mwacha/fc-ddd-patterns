@@ -171,7 +171,8 @@ describe("Order repository test", () => {
     expect(order).toStrictEqual(foundOrder);
   });
 
-  it("should find all orders", async () => {
+  it("should find all order", async () => {
+
     const customerRepository = new CustomerRepository();
     const customer = new Customer("123", "Customer 1");
     const address = new Address("Street 1", 1, "Zipcode 1", "City 1");
@@ -179,43 +180,39 @@ describe("Order repository test", () => {
     await customerRepository.create(customer);
 
     const productRepository = new ProductRepository();
-    const product = new Product("123", "Product 1", 10);
+    const product = new Product("Product1", "Product 1", 15);
     await productRepository.create(product);
-
-    const orderItem = new OrderItem(
-      "1",
+  
+    const ordemItem = new OrderItem(
+      "Item1",
       product.name,
-      0,
+      product.price,
       product.id,
       2
-    );
+    );     
 
-    const order = new Order("123", "123", [orderItem]);
+    const ordemItem2 = new OrderItem(
+      "Item2",
+      product.name,
+      product.price,
+      product.id,
+      2
+    );     
+ 
 
     const orderRepository = new OrderRepository();
+    
+    const order = new Order("Ordem1", "123", [ordemItem]);
     await orderRepository.create(order);
 
-    
-    const product2 = new Product("456", "Product 2", 20);
-    await productRepository.create(product2);
-
-    const orderItem2 = new OrderItem(
-      "2",
-      product2.name,
-      product2.price,
-      product2.id,
-      1
-    );
-
-    const order2 = new Order("456", "123", [orderItem2]);
+    const order2 = new Order("Ordem2", "123", [ordemItem2]);
     await orderRepository.create(order2);
 
     const foundAllOrders = await orderRepository.findAll();
 
-   
-
     expect(foundAllOrders).toHaveLength(2);
-   // expect(foundAllOrders[0]).toContainEqual(order);
-    expect(foundAllOrders[1]).toContainEqual(order2);
+    expect(foundAllOrders).toContainEqual(order);
+    expect(foundAllOrders).toContainEqual(order2);
+   
   });
 });
